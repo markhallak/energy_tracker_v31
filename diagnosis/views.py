@@ -1,9 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from questions.models import Question,QuestionCategory
 import pandas as pd
 from diagnosis.forms import DynamicForm
 from django.views.decorators.csrf import csrf_exempt
 from diagnosis.models import Diagnosis, Answers
+from django.contrib import messages
 
 # Create your views here.
 def diagnosis(request):
@@ -29,16 +30,15 @@ def diagnose(request):
                 bool_val = False if request.POST[k] == '0' else True
                 answer = Answers(question = q, answer = bool_val, diagnosis = diagnosis)
                 answer.save()
+        messages.success(request, 'Your score has been updated successfully')
+        return redirect(to='/dashboard')
  
-    questions = Question.objects.all()
+    questions = Question.objects.all().select_related().order_by("category_id")
     #qDf = pd.DataFrame(questions)
-    uniqueCategories= questions.values_list("category_id",flat=True).distinct()
-    categories = QuestionCategory.objects.filter(id__in=uniqueCategories)
     
     #uniqueCategories = qDf.category.unique()
     context = {
         'questions' : questions,
-        'cats': categories,
     }
     return render(request, 'make_diagnosis.html', context)
 

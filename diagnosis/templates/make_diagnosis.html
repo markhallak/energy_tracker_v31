@@ -2,56 +2,133 @@
 
 {% block page_content %}
 <section class="section">
-    <form method="post">
+{% regroup questions by category as question_list %}   
         {% csrf_token %}
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="card">
-                <div class="card-header"> <!-- Navigating question categories -->
-                    <nav>
-                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        {% for cat in cats %}
-                            <!--data-bs-target="#pills-profile" type="button" -->
-                            <button class="nav-link" aria-current="true" 
-                            data-bs-toggle="tab" role="tab" id="pills-{{cat.id}}" aria-controls="pills-{{cat.id}}" 
-                            data-bs-target="#tab_{{cat.id}}" aria-selected="false" type="button">
-                            {{ cat.name }}
-                            </button>
+    <div class="container-fluid" id="grad1">
+        <div class="row justify-content-center mt-0">
+            <div class="col-12 col-sm-12 col-md-12 col-lg-12 text-center p-0 mt-3 mb-2">
+                <div class="card px-0 pt-4 pb-0 mt-3 mb-3">
+                    <h2><strong>Diagnosis Form</strong></h2>
+                    <p>Answer the questions to get your energy Score</p>
+                    <div class="row">
+                        <form method="post" id="msform">
+                        <!-- progressbar -->
+                        <ul id="progressbar">
+                            {% for cat,item in question_list %}
+                                <li class="{% if forloop.first %}active{% endif %}" id="{{cat}}"><strong>{{cat}}</strong></li>
+                            {% endfor %}
+
+                        </ul>
+                        {% for cat in question_list %}
+                        <fieldset>
+                            <div class="form-card">
+                                <ul class="list-group">
+                                {% for item in cat.list %}
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-9">
+                                            {{ item.description }}
+                                        </div>
+                                        <div class="col">
+                                            
+                                                <input class="form-check-input" type="radio" name="{{ item.id }}" id="{{ item.id }}_yes" value=1>
+                                                <label class="form-check-label" for="_yes">Yes</label>
+                                                <input class="form-check-input" type="radio" name="{{ item.id }}" id="{{ item.id }}_no" value=0>
+                                                <label class="form-check-label" for="_no"> No</label>
+                                                
+                                            
+                                            
+                                        </div>
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </div>
+                            {% if not forloop.first %}
+                            <input type="button" name="previous" class="btn btn-primary previous action-button" value="Previous"/>
+                            {% endif %}
+                            {% if forloop.last %}
+                                <input type="Submit" name="Submit" class="btn btn-success" value="Submit"/>
+                            {% else %}
+                                <input type="button" name="next" class="btn btn-primary next action-button" value="Next Step"/>
+                            {% endif %}
+                        </fieldset>
                         {% endfor %}
-                        </div>
-                    </nav>
+                    </form>
+                    </div>
                 </div>
-                <div class="card-body">
-                    {% for item in questions %}
-                    <div class="row">
-                        <div class="col">
-                            {{ item.category.name }}
-                        </div>
-                        <div class="col">
-                            {{ item.description }}
-                        </div>
-                        <div class="col">
-                            <input class="form-check-input" type="radio" name="{{ item.id }}" id="{{ item.id }}_yes" value=1>
-                            <label class="form-check-label" for="_yes">
-                                Yes
-                            </label>
-                            <input class="form-check-input" type="radio" name="{{ item.id }}" id="{{ item.id }}_no" value=0>
-                            <label class="form-check-label" for="_no">
-                                No
-                            </label>
-                        </div>
-                    </div>
-                    {% endfor %}
-                    <div class="row">
-                        <div class="col">
-                            <input type="submit" value="Send" class="btn btn-primary">
-                        </div>
-                    </div>
-                </div> 
-            </div>  
+            </div>
         </div>
     </div>
-    </form>
-</section>
 
+</section>
+<script type="text/javascript">
+    $(document).ready(function(){
+    
+        var current_fs, next_fs, previous_fs; //fieldsets
+        var opacity;
+        
+        $(".next").click(function(){
+            
+            current_fs = $(this).parent();
+            next_fs = $(this).parent().next();
+            
+            //Add Class Active
+            $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+            
+            //show the next fieldset
+            next_fs.show(); 
+            //hide the current fieldset with style
+            current_fs.animate({opacity: 0}, {
+                step: function(now) {
+                    // for making fielset appear animation
+                    opacity = 1 - now;
+        
+                    current_fs.css({
+                        'display': 'none',
+                        'position': 'relative'
+                    });
+                    next_fs.css({'opacity': opacity});
+                }, 
+                duration: 600
+            });
+        });
+        
+        $(".previous").click(function(){
+            
+            current_fs = $(this).parent();
+            previous_fs = $(this).parent().prev();
+            
+            //Remove class active
+            $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
+            
+            //show the previous fieldset
+            previous_fs.show();
+        
+            //hide the current fieldset with style
+            current_fs.animate({opacity: 0}, {
+                step: function(now) {
+                    // for making fielset appear animation
+                    opacity = 1 - now;
+        
+                    current_fs.css({
+                        'display': 'none',
+                        'position': 'relative'
+                    });
+                    previous_fs.css({'opacity': opacity});
+                }, 
+                duration: 600
+            });
+        });
+        
+    $('.radio-group .radio').click(function(){
+        $(this).parent().find('.radio').removeClass('selected');
+        $(this).addClass('selected');
+    });
+
+    $(".submit").click(function(){
+        return false;
+    })
+    
+});
+</script>
 {% endblock %}

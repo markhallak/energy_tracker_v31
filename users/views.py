@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from .forms import CustomUserCreationForm
 from django.contrib.auth.decorators import login_required
-
+from .forms import UpdateUserForm
 # Create your views here.
 
 @login_required
@@ -17,13 +17,14 @@ def register(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            username = form.cleaned_data.get('username')
+            username = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password1')
-            user = authenticate(username = username, password = password)
+            user = authenticate(email = username, password = password)
             login(request, user)
-            return redirect('home')
+            messages.success(request, 'You have been registered sucessfully, now update your profile')
+            return redirect('user_profile')
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
     return render(request, 'register.html', {'form': form})
 
 def user_index(request):
@@ -39,3 +40,21 @@ def user_detail(request, pk):
         'user' : user
     }
     return render(request, 'user_detail.html', context)
+
+@login_required
+def profile(request):
+    if request.method == 'POST':
+        user_form = UpdateUserForm(request.POST, request.FILES, instance=request.user)
+        # profile_form = UpdateProfileForm(request.POST, request.FILES, instance=request.user.profile)
+
+        if user_form.is_valid(): #and profile_form.is_valid():
+            user_form.save()
+            # profile_form.save()
+            messages.success(request, 'Your profile is updated successfully')
+            return redirect(to='user_profile')
+    else:
+        user_form = UpdateUserForm(instance=request.user)
+        # profile_form = UpdateProfileForm(instance=request.user.profile)
+
+    return render(request, 'user_profile.html', {'user_form': user_form})
+    # return render(request, 'user_profile.html')

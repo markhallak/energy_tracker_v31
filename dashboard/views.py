@@ -18,32 +18,50 @@ def index(request):
     #last_date.values_list('date', flat=True)
     try:
         last_diagnosis = Diagnosis.objects.filter(user_id=request.user.id).latest('date')
-    except Diagnosis.DoesNotExist:
+    except:
        last_diagnosis = None
+
     #Data for historic graph: last data from x days
     date_range = [now() - timedelta(days=30), now()]
     try:
         data = Diagnosis.objects.filter(user_id = request.user.id, date__range = date_range).values()
-    except:
+        dataDF = pd.DataFrame(list(data))
+        date_values = dataDF['date'].dt.strftime("%Y-%M-%D%HH%ii%ss.000Z").astype("string").to_list()
+        score_values = dataDF['score'].to_list()
+    except :
         data = None
-    dataDF = pd.DataFrame(list(data))
-    date_values = dataDF['date'].dt.strftime("%Y-%M-%D%HH%ii%ss.000Z")
-    score_values = dataDF['score']
+        date_values = None
+        score_values= None
+    
+    
 
     #Data for leaderboard
     #leaderboard = Diagnosis.objects.filter(date__range = now()).values()
-    last = Diagnosis.objects.filter(user_id=request.user.id).latest('date')
+    try:
+        last = Diagnosis.objects.filter(user_id=request.user.id).latest('date')
+        last_score = last.score
+    except:
+        last= None
+        last_score = None
     #Last diagnosis per user
-    q_leaderboards = Diagnosis.objects.raw('''Select d.id, d.user_id, score from diagnosis_diagnosis d join(
+    try:
+        q_leaderboards = Diagnosis.objects.raw('''Select d.id, d.user_id, u.name as username, score from diagnosis_diagnosis d join(
                                     SELECT id,user_id,  
                                     MAX("diagnosis_diagnosis"."date") AS "max_date" 
-                                    FROM "diagnosis_diagnosis" GROUP BY "diagnosis_diagnosis"."user_id") latest_d on d.id =latest_d.id order by score desc''')           
+                                    FROM "diagnosis_diagnosis" GROUP BY "diagnosis_diagnosis"."user_id") latest_d 
+                                    on d.id =latest_d.id 
+                                    join users_user u on u.id=d.user_id
+                                    order by score desc''')           
+    except:
+        q_leaderboards =None
     leaders_list =[]
     
-    for a in Diagnosis.objects.raw('''Select d.id as id, d.user_id as user_id, score as score from diagnosis_diagnosis d join(
+    for a in Diagnosis.objects.raw('''Select d.id as id, d.user_id as user_id,u.name as username, score as score from diagnosis_diagnosis d join(
                                     SELECT id,user_id,  
                                     MAX("diagnosis_diagnosis"."date") AS "max_date" 
-                                    FROM "diagnosis_diagnosis" GROUP BY "diagnosis_diagnosis"."user_id") latest_d on d.id =latest_d.id order by score desc'''):
+                                    FROM "diagnosis_diagnosis" GROUP BY "diagnosis_diagnosis"."user_id") latest_d on d.id =latest_d.id 
+                                    join users_user u on u.id=d.user_id
+                                    order by score desc'''):
         leaders_list.append(a)
     
     # Max date per user 
@@ -56,10 +74,9 @@ def index(request):
         'actual_index': last_diagnosis,
         'date_range': date_range,
         'data': data,
-        #'date_values': json.dumps(date_values.values),
-        'date_values': date_values.astype("string").to_list(),
-        'score_values': score_values.to_list(),
-        'last':last.score,
+        'date_values': date_values,
+        'score_values': score_values,
+        'last':last_score,
         'users_list': leaders_list,
         's': q_leaderboards
     }

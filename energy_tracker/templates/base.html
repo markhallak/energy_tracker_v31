@@ -24,8 +24,19 @@
 <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js' %}" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js' %}" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js' %}" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>-->
+<div id="messages" class="fixed-top" width="50%">
+{% if messages %}
+      {% for message in messages %}
+      
+      <div{% if message.tags %} class="alert alert-primary alert-dismissible {{ message.tags }} fade show"{% endif %}>
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endfor %}
+{% endif %}
+</div>
 <header id="header" class="header fixed-top d-flex align-items-center">
-
+    
     <div class="d-flex align-items-center justify-content-between">
       <a href="{% url 'dahsboard_index' %}" class="logo d-flex align-items-center">
         <img src="{% static 'assets/img/logo.png' %}"  alt="">
@@ -42,7 +53,7 @@
             <i class="bi bi-search"></i>
           </a>
         </li><!-- End Search Icon-->
-
+        {% if user.is_authenticated %}
         <li class="nav-item dropdown">
 
           <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
@@ -121,15 +132,19 @@
         
 
         <li class="nav-item dropdown pe-3">
-
+          
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-            <img src="{% static 'assets/img/profile-img2.jpg' %}" alt="Profile" class="rounded-circle">
-            <span class="d-none d-md-block dropdown-toggle ps-2">Maria Hallak</span>
+            <img src="{{ user.profile_image|cut:'energy_tracker' }}" alt="Profile" class="rounded-circle">
+            <span class="d-none d-md-block dropdown-toggle ps-2">
+              
+                {{user.name}}
+              
+            </span>
           </a><!-- End Profile Iamge Icon -->
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             <li class="dropdown-header">
-              <h6>Maria Hallak</h6>
+              <h6>{{user.name}}</h6>
               <span>Actual Status</span>
             </li>
             <li>
@@ -137,20 +152,13 @@
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+              <a class="dropdown-item d-flex align-items-center" href="{% url 'user_profile' %}">
                 <i class="bi bi-person"></i>
                 <span>My Profile</span>
               </a>
             </li>
             <li>
               <hr class="dropdown-divider">
-            </li>
-
-            <li>
-              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
-                <i class="bi bi-gear"></i>
-                <span>Account Settings</span>
-              </a>
             </li>
             <li>
               <hr class="dropdown-divider">
@@ -175,6 +183,7 @@
 
           </ul><!-- End Profile Dropdown Items -->
         </li><!-- End Profile Nav -->
+        {% endif %}
 
       </ul>
     </nav><!-- End Icons Navigation -->
@@ -257,20 +266,21 @@
         </a>
       </li><!-- End F.A.Q Page Nav -->
 
-
+      {% if not user.is_authenticated %}
       <li class="nav-item">
-        <a class="nav-link collapsed" href="pages-register.html">
+        <a class="nav-link collapsed" href="{% url 'register' %}">
           <i class="bi bi-card-list"></i>
           <span>Register</span>
         </a>
       </li><!-- End Register Page Nav -->
 
       <li class="nav-item">
-        <a class="nav-link collapsed" href="pages-login.html">
+        <a class="nav-link collapsed" href="{% url 'login' %}">
           <i class="bi bi-box-arrow-in-right"></i>
           <span>Login</span>
         </a>
       </li><!-- End Login Page Nav -->
+      {% endif %}
     </ul>
 
   </aside><!-- End Sidebar-->
@@ -291,7 +301,7 @@
       <!-- You can delete the links only if you purchased the pro version. -->
       <!-- Licensing information: https://bootstrapmade.com/license/ -->
       <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
-      Designed by <a target="_blank" href="https://bootstrapmade.com/">BootstrapMade</a>
+      Designed by BootstrapMade
     </div>
   </footer><!-- End Footer -->
 

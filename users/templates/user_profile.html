@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block page_content %}
+{% if user_form.errors %}
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        <div id="form_errors">
+            {% for key, value in user_form.errors.items %}
+                <strong>{{ value }}</strong>
+            {% endfor %}
+        </div>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+{% endif %}
+<section class="section">
+    <div class="row">
+        <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-5 my-4 p-4">
+                            <img src="{{ user.profile_image|cut:'energy_tracker' }}" alt="Profile" class="rounded-circle" style="cursor: pointer;">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="small mb-1">Change profile photo:</label>
+                            {{ user_form.profile_image }}
+                        </div>
+                    </div>  
+                    <div class="col-4">
+                        <label class="small mb-1">Name:</label>
+                        {{ user_form.name }}
+                    </div>
+                    <div class="col-2">
+                        <label class="small mb-1">Last Name:</label>
+                        {{ user.last_name }}
+                    </div>
+                    <div class="col-2">
+                        <label class="small mb-1">Email:</label>
+                        {{ user_form.email }}
+                    </div>
+                    <div class="col-2">
+                        <label class="small mb-1">Country:</label>
+                        {{ user_form.country }}
+                    </div>
+                    <br><br>
+                    <button type="submit" class="btn btn-dark btn-lg">Save Changes</button>
+                    <button type="reset" class="btn btn-dark btn-lg">Reset</button>
+                </div>
+                
+            </div> 
+            
+        </div>
+        </form>
+        
+    </div>
+</section>
+{% endblock %}

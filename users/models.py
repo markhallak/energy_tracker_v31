@@ -2,12 +2,16 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from .managers import CustomUserManager
+from django.templatetags.static import static
+
 
 
 # Create your models here.
 class Country(models.Model):
     name = models.CharField(max_length = 100)
     code = models.CharField(max_length = 3)
+    def __str__(self):
+        return self.name
 
 class User(AbstractUser):
     username = None
@@ -21,7 +25,7 @@ class User(AbstractUser):
 
     objects = CustomUserManager()
 
-    #profile_image = models.FilePathField(path="/assets/img/profile",null = True, default = None)
+    profile_image = models.ImageField(upload_to="./energy_tracker/static/assets/img/profile/",null = True, default = None, blank=True)
     def __str__(self):
         return self.email
 
