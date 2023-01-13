@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% load static %}
+{% block page_content %}
+
+<head>
+    <title>Worldwide Data</title>
+</head>
+
+<div class="pagetitle">
+    <h1>Worldwide Data</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item active">Worldwide Data</li>
+        </ol>
+    </nav>
+</div>
+<!-- End Page Title -->
+
+<section class="section">
+    <div class="row">
+
+        <!-- Left side columns -->
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-12 mapholder">
+                    <div id="map"></div>
+                    <script
+                       src="https://maps.googleapis.com/maps/api/js?key={{key}}&v=beta&libraries=marker&callback=initMap"
+                       defer
+                    >
+                    </script>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <img src="{% static 'assets/img/energy.png' %}" class="img-fluid img" alt="">
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Worldwide Energy Consumption per Capita <span>| 2022</span></h5>
+                            <table class="table table-borderless datatable">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Country Name</th>
+                                    <th scope="col">Consumption (kWh/person)</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for country, value in countries.items %}
+                                <tr>
+                                    <th scope="row">{{country}}</th>
+                                    <td class="td"><span class="span badge bg-success">{{value|intcomma}}</span></td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div><!-- End green ranking -->
+            </div>
+        </div>
+    </div>
+</section>
+<script> 
+   
+    $(document).ready(function(){
+        $.ajax({
+            url: "{% url 'getmapdata'%}",
+            method: 'GET',
+            success: function (data) {
+                console.log(data);
+                initMap(data);
+            }
+      });
+    });
+
+    function initMap(data) {
+        const map = new google.maps.Map(document.getElementById('map'), {
+           zoom: 5,
+           center: {lat: {{user.country.lat|safe}}, lng: {{user.country.long|safe}}},
+           mapId: "918e48ecf8328f1f"
+        });
+        
+        const markers = data.result_list?.map((i) => {
+            const energyTag = document.createElement("div");
+            if (i.latitude == {{user.country.lat|safe}} && i.longitude =={{user.country.long|safe}} ){
+                energyTag.className = "energy-tag-mine";
+                energyTag.innerHTML  =  "User consumption is: <br>" +data.user + " kWh <br> Country Consumption:<br> " + i.score + " kWh/person";;
+            }else{
+                energyTag.className = "energy-tag";
+                energyTag.textContent =  i.score + " kWh/person";
+            }
+
+            const markerView = new google.maps.marker.AdvancedMarkerView({
+                map,
+                position: { lat: parseFloat(i.latitude), lng: parseFloat(i.longitude)},
+                content: energyTag,
+             })
+         });
+         // Your score
+         /*const energyTag = document.createElement("div");
+        energyTag.className = "energy-tag-mine";
+        energyTag.innerHTML  =  "User consumption is: <br>" +data.user + " kWh";
+
+        const markerView = new google.maps.marker.AdvancedMarkerView({
+            map,
+            position: { lat: parseFloat({{user.country.lat|safe}}), lng: parseFloat({{user.country.long|safe}})},
+            content: energyTag,
+            })*/
+      }
+
+
+</script>
+{% endblock %}
+

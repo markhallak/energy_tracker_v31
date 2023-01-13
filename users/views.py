@@ -1,17 +1,22 @@
-from django.shortcuts import render, redirect
-from users.models import User
-from django.contrib.auth import login, authenticate
 from django.contrib import messages
-from django.contrib.auth.forms import UserCreationForm
-from .forms import CustomUserCreationForm
+from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.views.decorators.cache import cache_control
+
+from users.models import User
+from .forms import CustomUserCreationForm
 from .forms import UpdateUserForm
+
+
 # Create your views here.
 
 @login_required
 def home(request):
-    return render(request, "success.html", {})
+    return redirect(to='/dashboard')
 
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -19,7 +24,7 @@ def register(request):
             form.save()
             username = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password1')
-            user = authenticate(email = username, password = password)
+            user = authenticate(email=username, password=password)
             login(request, user)
             messages.success(request, 'You have been registered sucessfully, now update your profile')
             return redirect('user_profile')
@@ -27,27 +32,31 @@ def register(request):
         form = CustomUserCreationForm()
     return render(request, 'register.html', {'form': form})
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def user_index(request):
     users = User.objects.all()
     context = {
-        'users' : users
+        'users': users
     }
     return render(request, 'user_index.html', context)
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def user_detail(request, pk):
-    user = User.objects.get(pk = pk)
+    user = User.objects.get(pk=pk)
     context = {
-        'user' : user
+        'user': user
     }
     return render(request, 'user_detail.html', context)
 
+
 @login_required
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def profile(request):
     if request.method == 'POST':
         user_form = UpdateUserForm(request.POST, request.FILES, instance=request.user)
         # profile_form = UpdateProfileForm(request.POST, request.FILES, instance=request.user.profile)
 
-        if user_form.is_valid(): #and profile_form.is_valid():
+        if user_form.is_valid():  # and profile_form.is_valid():
             user_form.save()
             # profile_form.save()
             messages.success(request, 'Your profile is updated successfully')

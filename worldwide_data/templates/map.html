@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static %}
+{% block page_content %}
+<style type="text/css">
+    .mapholder{
+        height: 500px;
+        width: 100%;
+    }
+    
+    #map {
+        height: 100%;
+      }
+</style>
+<div class="pageholder">
+    <div class="titleholder"> 
+        <div class="title"><i class="fas fa-compass mr-2"></i> Google Maps #4: Markers on a map </div>
+        
+    </div>
+
+    <div class="linkholder">
+        <div id="map"></div>
+<script
+   src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=initMap&v=weekly"
+   defer
+></script>
+    </div>
+</div>
+<script> 
+
+    
+    $(document).ready(function(){
+        $.ajax({
+            url: "{% url 'getmapdata'%}",
+            method: 'GET',
+            success: function (data) {
+                console.log(data);
+                initMap(data);
+            }
+      });
+    });
+
+    function initMap(data) {
+        const map = new google.maps.Map(document.getElementById('map'), {
+           zoom: 4,
+           center: {lat: 51.5944418, lng: 4.7492914}
+        });
+        
+        const markers = data?.map((i) => {
+             const marker = new google.maps.Marker({
+                 position: { lat: parseFloat(i.latitude), lng: parseFloat(i.longitude)},
+                 map: map,
+                label: i.name,
+             })
+         });
+      }
+
+</script>
+{% endblock %}

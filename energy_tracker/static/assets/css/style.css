@@ -1406,3 +1406,99 @@ select.list-dt:focus {
     width: 100%;
     object-fit: cover;
 }
+
+.img{
+    border-radius: 0.375rem;
+}
+
+.span{
+    width: 80px;
+    display:inline-block;
+}
+
+.profile-img{
+    width:150px;
+    height:150px;
+    display:block;
+}
+
+.td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.icon-green{
+    color: #2eca6a;
+}
+
+.icon-blue{
+    color: #4154f1;
+}
+
+.div {
+  height: 200px;
+}
+
+.div2{
+    height: 175px
+}
+
+.status-text{
+font-size:22px !important
+}
+
+/* Map view*/
+.mapholder{
+  height: 500px;
+  width: 100%;
+}
+
+#map {
+  height: 100%;
+}
+/* HTML marker styles */
+.energy-tag {
+  background-color: #4285F4;
+  border-radius: 8px;
+  color: #FFFFFF;
+  font-size: 14px;
+  padding: 10px 15px;
+  position: relative;
+}
+.energy-tag-mine  {
+  background-color: #ffcc00;
+  font-size: 15px;
+  border-radius: 8px;
+  color: #FFFFFF;
+  font-size: 14px;
+  padding: 10px 15px;
+  position: relative;
+}
+
+.energy-tag::after {
+content: "";
+position: absolute;
+left: 50%;
+top: 100%;
+transform: translate(-50%, 0);
+width: 0;
+height: 0;
+border-left: 8px solid transparent;
+border-right: 8px solid transparent;
+border-top: 8px solid #4285F4;
+}
+.energy-tag-mine::after  {
+content: "";
+position: absolute;
+left: 50%;
+top: 100%;
+transform: translate(-50%, 0);
+width: 0;
+height: 0;
+border-left: 8px solid transparent;
+border-right: 8px solid transparent;
+border-top: 8px solid #ffcc00;
+}
+
+[class$=api-load-alpha-banner] {
+display: none;}

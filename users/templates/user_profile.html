@@ -21,7 +21,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-5 my-4 p-4">
-                            <img src="{{ user.profile_image|cut:'energy_tracker' }}" alt="Profile" class="rounded-circle" style="cursor: pointer;">
+                            <img src="{{ user.profile_image|cut:'energy_tracker' }}" alt="Profile" class="rounded-circle profile-img" style="cursor: pointer;">
                         </div>
                     </div>
                     <div class="row">
@@ -29,26 +29,25 @@
                             <label class="small mb-1">Change profile photo:</label>
                             {{ user_form.profile_image }}
                         </div>
-                    </div>  
+                    </div>
+                    <br>
                     <div class="col-4">
                         <label class="small mb-1">Name:</label>
                         {{ user_form.name }}
                     </div>
-                    <div class="col-2">
-                        <label class="small mb-1">Last Name:</label>
-                        {{ user.last_name }}
-                    </div>
-                    <div class="col-2">
+                    <br>
+                    <div class="col-4">
                         <label class="small mb-1">Email:</label>
                         {{ user_form.email }}
                     </div>
-                    <div class="col-2">
+                    <br>
+                    <div class="col-4">
                         <label class="small mb-1">Country:</label>
                         {{ user_form.country }}
                     </div>
                     <br><br>
-                    <button type="submit" class="btn btn-dark btn-lg">Save Changes</button>
-                    <button type="reset" class="btn btn-dark btn-lg">Reset</button>
+                    <button type="submit" class="btn btn-primary btn-lg">Save Changes</button>
+                    <button type="reset" class="btn btn-primary btn-lg">Reset</button>
                 </div>
                 
             </div> 

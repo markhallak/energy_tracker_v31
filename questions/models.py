@@ -13,6 +13,7 @@ class Question(models.Model):
     category = models.ForeignKey(QuestionCategory,on_delete=models.CASCADE)
     score_yes = models.FloatField()
     score_no = models.FloatField()
+
     def __str__(self):
             return self.name
 
