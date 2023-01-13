@@ -25,6 +25,7 @@ SECRET_KEY = 'django-insecure-6al3jg#3i!+(a9r5gx@=w0*=(n99nz33i=tz5)sfw)du63gk54
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = ['https://energytracker.up.railway.app']
 
 # Application definition
 

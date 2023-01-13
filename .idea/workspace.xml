@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9a09c4c3-6219-4618-a609-9f9390d22ca3" name="Changes" comment="new commit 2">
-      <change beforePath="$PROJECT_DIR$/energy_tracker/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/energy_tracker/settings.py" afterDir="false" />
-    </list>
+    <list default="true" id="9a09c4c3-6219-4618-a609-9f9390d22ca3" name="Changes" comment="new commit 3" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -54,12 +52,20 @@
       <option name="project" value="LOCAL" />
       <updated>1673647685006</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="new commit 3">
+      <created>1673648034624</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1673648034624</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="new commit" />
     <MESSAGE value="new commit 2" />
-    <option name="LAST_COMMIT_MESSAGE" value="new commit 2" />
+    <MESSAGE value="new commit 3" />
+    <option name="LAST_COMMIT_MESSAGE" value="new commit 3" />
   </component>
 </project>
